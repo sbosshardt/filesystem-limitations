@@ -22,9 +22,9 @@ A cross-platform Python library providing a simple way to determine filesystem l
  - Mac OSX (macOS)
  - Windows
 
-**Also, in theory:**
+**Also (more testing needed):**
  - Java (Jython)
- - Unix (note: untested on unixes other than MacOS and Linux)
+ - Unix (untested on unixes other than MacOS and Linux)
 
 
 ## Usage
