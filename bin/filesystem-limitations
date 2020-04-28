@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+
+import os
+import argparse
+import filesystem_limitations
+
+current_dir = os.getcwd()
+# lazy way of getting type_options
+limits = filesystem_limitations.get(current_dir)
+type_options = sorted(limits.keys())
+#type_options = ["all", "NAME_MAX", "PATH_MAX", "PATH_COMPONENT_MAX"]
+type_options_text = ", ".join(type_options)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-n", "--numeric", action="store_true", default=False,
+                    help="Numeric output mode. (True: 1, False: 0, None: -1)")
+parser.add_argument("type", nargs='?', default="all",
+                    help="Valid options are: all, " + type_options_text + ". Default: %(default)s.")
+parser.add_argument("path", nargs='?', default=current_dir,
+                    help="Path to the directory for which to determine filesystem limitations. Defaults to current working directory.")
+args = parser.parse_args()
+
+target_dir = args.path
+limit_type = args.type
+numeric_output_mode = args.numeric
+
+if (target_dir != current_dir):
+    limits = filesystem_limitations.get(target_dir)
+
+def format_output_var(var):
+    if (args.numeric == False):
+        return str(var)
+    if (var == True):
+        return "1"
+    elif (var == False):
+        return "0"
+    elif (var == None):
+        return "-1"
+    return str(var)
+
+# Provide output to the user (based on the args they provided)
+if (limit_type == "all"):
+    for limit_key in type_options:
+        print(limit_key + ": " + format_output_var(limits[limit_key]))
+elif (limit_type in limits):
+    print(format_output_var(limits[limit_type]))
+else:
+    print("Invalid type provided: " + limit_type)

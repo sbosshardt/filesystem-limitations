@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="filesystem-limitations-sbosshardt",
-    version="0.0.1",
+    version="0.0.2",
     author="Samuel Bosshardt",
     author_email="support@sbosshardt.com",
     description="A cross-platform Python library providing a simple way to determine filesystem limitations of a given directory.",
@@ -33,4 +33,7 @@ setuptools.setup(
     ],
     # TBD: Should this version number be adjusted up/down?
     python_requires='>=2.6',
+    scripts=[
+        'bin/filesystem-limitations',
+    ],
 )
