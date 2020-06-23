@@ -44,13 +44,16 @@ class filesystem_limitations(object):
         target_abspath = os.path.abspath(target_realpath)
         limits = self.default_limits
 
-        # TODO: It is likely possible for malicious values of target_abspath to cause
-        # arbitrary code to execute. Likely need to escape single quotes, but what
-        # about backslashes that occur before quotes?
+        # Prevent malicious values of target_abspath from causing arbitrary
+        # code to execute. Escape single quotes, and account for any
+        # backslashes that occur before single quotes.
+        sanitized_target_abspath = target_abspath.replace("\'", "'").replace("'", "\'")
+        # Newlines should not be part of a directory name, so filter them.
+        sanitized_target_abspath = sanitized_target_abspath.replace("\r", "").replace("\n", "")
         limits_commands = {
-            "NAME_MAX": "getconf NAME_MAX '" + target_abspath + "'",
-            "PATH_MAX": "getconf PATH_MAX '" + target_abspath + "'",
-            "FILESIZEBITS": "getconf FILESIZEBITS '" + target_abspath + "'",
+            "NAME_MAX": "getconf NAME_MAX '" + sanitized_target_abspath + "'",
+            "PATH_MAX": "getconf PATH_MAX '" + sanitized_target_abspath + "'",
+            "FILESIZEBITS": "getconf FILESIZEBITS '" + sanitized_target_abspath + "'",
         }
         for limit_name in limits_commands:
             command = limits_commands[limit_name]
